@@ -1,0 +1,32 @@
+# Default server configuration
+#
+server {
+		listen 80 default_server;
+		listen [::]:80 default_server;
+
+
+		# SSL configuration
+		#
+		include /etc/ssl/private/nginx-selfsigned.key;
+		include /etc/ssl/certs/nginx-selfsigned.crt;
+		listen 443 ssl default_server;
+		listen [::]:443 ssl default_server;
+
+		root /var/www/html/wordpress;
+
+		index index.php index.html index.htm index.nginx-debian.html;
+		
+
+		server_name _;
+
+		location / {
+				try_files $uri $uri/ =404;
+		}
+
+		# pass PHP scripts to FastCGI server
+		#
+		location ~ \.php$ {
+					include snippets/fastcgi-php.conf;
+					fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+		}
+}
